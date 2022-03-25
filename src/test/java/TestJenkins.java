@@ -1,8 +1,10 @@
 import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.shaded.org.hamcrest.MatcherAssert;
 
 import java.io.File;
@@ -14,12 +16,13 @@ import java.net.http.HttpResponse;
 
 import static org.testcontainers.shaded.org.hamcrest.Matchers.containsString;
 
+@Testcontainers
 @DisplayName("Jenkins")
-public class TestJenkins {
+class TestJenkins {
 
   public static final int JENKINS_PORT = 8080;
 
-  @ClassRule
+  @Container
   public static DockerComposeContainer jenkinsServer =
       new DockerComposeContainer(new File("docker-compose.yml"))
           .withExposedService("jenkins", JENKINS_PORT)
@@ -27,7 +30,7 @@ public class TestJenkins {
 
   @Test
   @DisplayName("first request to fresh container should return \"Authentication required\"")
-  public void givenFreshContainer_whenFirstRequest_thenReturnsAuthenticationRequired()
+  void firstRequestShouldReturnsAuthenticationRequiredTest()
       throws Exception {
     String jenkinsUrl = "http://"
         + jenkinsServer.getServiceHost("jenkins", JENKINS_PORT)
