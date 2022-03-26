@@ -16,17 +16,18 @@ import java.net.http.HttpResponse;
 
 import static org.testcontainers.shaded.org.hamcrest.Matchers.containsString;
 
+// tag::blog[]
 @Testcontainers
 @DisplayName("Jenkins")
 class TestJenkins {
 
   public static final int JENKINS_PORT = 8080;
 
-  @Container
+  @Container // <.>
   public static DockerComposeContainer jenkinsServer =
       new DockerComposeContainer(new File("docker-compose.yml"))
           .withExposedService("jenkins", JENKINS_PORT)
-          .waitingFor("jenkins", Wait.forLogMessage(".*Jenkins is fully up and running*\\n", 1));
+          .waitingFor("jenkins", Wait.forLogMessage(".*Jenkins is fully up and running*\\n", 1)); // <.>
 
   @Test
   @DisplayName("first request to fresh container should return \"Authentication required\"")
@@ -39,11 +40,11 @@ class TestJenkins {
 
     MatcherAssert.assertThat("first request to fresh container should return \"Authentication required\"",
         callHttpEndpoint(jenkinsUrl),
-        containsString("Authentication required")
+        containsString("Authentication required")// <.>
     );
   }
 
-  private static String callHttpEndpoint(String url) throws IOException, InterruptedException {
+  private static String callHttpEndpoint(String url) throws IOException, InterruptedException { // <.>
     HttpClient httpClient = HttpClient.newBuilder().build();
     HttpRequest mainRequest = HttpRequest.newBuilder()
         .uri(URI.create(url))
@@ -54,3 +55,4 @@ class TestJenkins {
   }
 
 }
+// end::blog[]
