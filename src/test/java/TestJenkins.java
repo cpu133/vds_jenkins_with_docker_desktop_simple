@@ -1,4 +1,6 @@
 import org.junit.ClassRule;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.testcontainers.containers.DockerComposeContainer;
@@ -19,6 +21,7 @@ import static org.testcontainers.shaded.org.hamcrest.Matchers.containsString;
 // tag::blog[]
 @Testcontainers
 @DisplayName("Jenkins")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class TestJenkins {
 
   public static final int JENKINS_PORT = 8080;
@@ -30,8 +33,7 @@ class TestJenkins {
           .waitingFor("jenkins", Wait.forLogMessage(".*Jenkins is fully up and running*\\n", 1)); // <.>
 
   @Test
-  @DisplayName("first request to fresh container should return \"Authentication required\"")
-  void firstRequestShouldReturnsAuthenticationRequiredTest()
+  void first_request_to_fresh_container_should_return_authentication_required()
       throws Exception {
     String jenkinsUrl = "http://"
         + jenkinsServer.getServiceHost("jenkins", JENKINS_PORT)
